@@ -26,8 +26,18 @@ class BagOfWords:
   def doc2vec(self, doc):
     return np.sum([ self.word2vec(self.normalize(w)) for w in doc.split(" ") ], axis=0)
 
-  def train(self, data):
-    self.words = [ '<unk>' ] + [ self.normalize(w) for w in " ".join(data.keys()).split(" ") ]
+  def train(self, data, N=1000):
+    words = {}
+    for word in " ".join(data.keys()).split(" "):
+      word = self.normalize(word)
+      if len(word) < 1 or len(word) > 10:
+        continue
+      if word in words:
+        words[word] += 1
+      else:
+        words[word] = 1
+
+    self.words = [ '<unk>' ] + [ w[0] for w in sorted(list(words.items()), key=lambda w: -w[1])[:N] ]
 
     self.model = self.model_class(self.model_args, self.model_kwargs)
     self.X = [ self.doc2vec(t) for t in data.keys() ]
