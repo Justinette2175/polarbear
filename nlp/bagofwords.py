@@ -54,8 +54,6 @@ class BagOfWords:
     self.X = np.array([ self.doc2vec(item[0]) for item in data_list ])
     self.y = np.array([ item[1] for item in data_list ])
 
-    print(f'{np.count_nonzero(self.y)}/{self.y.shape[0]}')
-    
     self.train_count = int(len(data) * split)
 
     self.model.fit(self.X[:self.train_count], self.y[:self.train_count])
