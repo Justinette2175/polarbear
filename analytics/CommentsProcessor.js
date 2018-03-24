@@ -176,11 +176,9 @@ const processComments = function(comments) {
     .then((sentiment) => {
       console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
 
-      const sentimentScores = sentiment.map((doc) => doc.score);
-
       return {
-        sentimentAverage: mean(sentimentScores),
-        sentimentStdDev: standardDeviation(sentimentScores)
+        sentimentAverage: mean(sentiment),
+        sentimentStdDev: standardDeviation(sentiment)
       };
     });
 };
