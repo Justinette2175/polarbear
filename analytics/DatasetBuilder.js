@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const RequestPromise = require('request-promise');
 const fs = require('fs');
+const striptags = require('striptags');
 
 const CommentsProcessor = require('./CommentsProcessor');
 const ArticleProcessor = require('./ArticleProcessor');
@@ -119,8 +120,8 @@ const loadAndSaveNArticles = function (requestedCount, countOnly) {
     })
     .then((fullArticlesData) => {
       console.log("Done loading article data");
-      fs.writeFileSync(`${__dirname}/data/article-data.json`, JSON.stringify(fullArticlesData), {encoding: 'utf8'});
-      return fullArticlesData;
+      fs.writeFileSync(`${__dirname}/data/article-data.json`, JSON.stringify(fullArticlesData.filter((x) => !!x)), {encoding: 'utf8'});
+      return fullArticlesData.filter((x) => !!x);
     });
 };
 
@@ -128,6 +129,7 @@ const parseFullArticleData = function (fullArticlesData) {
   return Promise.mapSeries(fullArticlesData.filter((x) => !!x), 
     (articleData) => CommentsProcessor.processComments({phrases: articleData.phrases, count: articleData.count, pageId: articleData.viaFouraPageId})
       .then((articleCommentData) => {
+        articleData.title = striptags(articleData.title);
         return Object.assign({}, articleData, articleCommentData);
       })
   );
