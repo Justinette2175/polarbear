@@ -1,18 +1,71 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import TextEditor from './components/TextEditor';
+import Promise from 'bluebird';
+
+import Sidebar from './components/Sidebar';
+import Editor from './components/Editor';
+
+import { Layout, Menu, Icon } from 'antd';
+const { Header, Content, Footer } = Layout;
 
 class App extends Component {
+
+  constructor() {
+    super();
+    this.setStateAsync = Promise.promisify(this.setState);
+    this.state = {
+      titleValue: '',
+      abstractValue: '',
+      paragraphsValue:'', 
+    }
+  }
+
+  _updateTitleValue(value) {
+    this.setStateAsync({ titleValue: value });
+  }
+
+  get updateTitleValue() {
+    return this._updateTitleValue.bind(this);
+  }
+
+  _updateAbstractValue(value) {
+    this.setStateAsync({ abstractValue: value });
+  }
+
+  get updateAbstractValue() {
+    return this._updateAbstractValue.bind(this);
+  }
+
+  _updateParagraphsValue(value) {
+    this.setStateAsync({ paragraphsValue: value });
+  }
+
+  get updateParagraphsValue() {
+    return this._updateParagraphsValue.bind(this);
+  }
+
+
+  sendUpdatedText() {
+
+  }
+
   render() {
+
+    const textTools = {
+      title: this.state.title,
+      abstract: this.state.abstract,
+
+    }
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <Layout>  
+          <Header>
+          </Header>
+          <Content className="main-content">
+            <Sidebar/>
+            <Editor/>
+          </Content> 
+        </Layout>  
       </div>
     );
   }

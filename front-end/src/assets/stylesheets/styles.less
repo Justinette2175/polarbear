@@ -1,0 +1,60 @@
+@import 'variables';
+
+.App {
+  background-color:black;
+  height:100vh;
+  width:100vw;
+  display: flex;
+}
+
+.main-content {
+  display:flex;
+  flex:1;
+  overflow:scroll;
+}
+
+#sidebar{
+  flex:3;
+  height:auto;
+  background-color: @light-grey;
+  overflow:scroll;
+  display:flex;
+  flex-flow:column;
+  #info-sections-wrapper{
+    flex:3;
+  }
+  #data-sections-wrapper{
+    flex:5;
+    .chart-wrapper{
+      max-width: 350px;
+    }
+  }
+}
+
+#editor {
+  flex:5;
+  height:auto;
+  background-color: @grey;
+  padding:40px 30px;
+  display:flex;
+  flex-flow:column;
+  h3{
+    margin-top:30px;
+  }
+  #editor-summary{
+    textarea{
+      height:100px;
+    }
+  }
+  #editor-text{
+    textarea{
+      height:100%;
+    }
+    flex:1;
+  }
+  #editor-title{
+    textarea{
+      background-color:transparent !important;
+    }
+  }
+}
