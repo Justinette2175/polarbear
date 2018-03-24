@@ -139,23 +139,32 @@ function retrieveViaFouraPage(path) {
   });
 }
 
-module.exports = function(articlePath) {
+module.exports = function(articlePath, onlyCommentCount) {
   return retrieveViaFouraPage(articlePath)
     .then((articleData) => listCommentsForPage(String(articleData.result.id)))
     .then((comments) => {
+      const basicData = {
+        rcUrl: articlePath,
+        viaFouraPageId: comments.pageId,
+        count: comments.count,
+        read: comments.read,
+        mean: 0,
+        standardDeviation: 0
+      };
+      if (onlyCommentCount) {
+        console.log("Listing only comment count for page", comments.pageId);
+        return basicData;
+      }
       return listSentiment(comments.phrases)
         .then((sentiment) => {
           console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
 
           const sentimentScores = sentiment.map((doc) => doc.score);
-          return {
-            rcUrl: articlePath,
-            viaFouraPageId: comments.pageId,
-            count: comments.count,
-            read: comments.read,
-            mean: mean(sentimentScores),
-            standardDeviation: standardDeviation(sentimentScores)
-          };
+
+          basicData.mean = mean(sentimentScores);
+          basicData.standardDeviation = standardDeviation(sentimentScores);
+
+          return basicData;
         });
     });
 };

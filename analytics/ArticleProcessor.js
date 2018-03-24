@@ -24,8 +24,8 @@ const loadArticleMetadata = function (id) {
   });
 };
 
-const processArticleMetadata = function (metadata) {
-  return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''))
+const processArticleMetadata = function (metadata, onlyCommentCount) {
+  return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''), onlyCommentCount)
     .then((commentData) => {
       console.log("Done processing comments for article", metadata.id);
 
@@ -55,9 +55,9 @@ const processArticleMetadata = function (metadata) {
     });
 };
 
-const processArticle = function (id) {
+const processArticle = function (id, onlyCommentCount) {
   return loadArticleMetadata(id)
-    .then((metadata) => processArticleMetadata(metadata))
+    .then((metadata) => processArticleMetadata(metadata, onlyCommentCount))
     .catch((e) => null);
 };
 

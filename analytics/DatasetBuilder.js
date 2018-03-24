@@ -95,7 +95,7 @@ const listLineups = function() {
   .then((result) => result.items.map((item) => item.id));
 };
 
-const parseNArticles = function (requestedCount) {
+const parseNArticles = function (requestedCount, countOnly) {
   console.log("Must load and process", requestedCount, "articles");
   return listLineups()
     .then((lineupIds) => {
@@ -107,12 +107,12 @@ const parseNArticles = function (requestedCount) {
       console.log("Done loading article ids");
       fs.writeFileSync(`${__dirname}/data/articles.json`, JSON.stringify(articleData.items), {encoding: 'utf8'});
       console.log("Now processing data");
-      return Promise.map(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId));
+      return Promise.map(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId, countOnly));
     })
     
 };
 
-parseNArticles(process.argv[2] || DEFAULT_ARTICLE_COUNT).then((data) => {
+parseNArticles(process.argv[2] || DEFAULT_ARTICLE_COUNT, process.argv[3] && process.argv[3] === 'count').then((data) => {
   const dataSet = data.filter((x) => !!x);
   console.log("Loaded", dataSet.length, "articles with comment data among", data.length, "articles loaded");
   fs.writeFileSync(`data-${Date.now()}.json`, JSON.stringify(dataSet), {encoding: 'utf8'});
