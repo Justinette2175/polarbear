@@ -38,13 +38,6 @@ const loadLineupStartingAtPage = function (accumulator, id, page) {
 };
 
 const loadLineup = function (id) {
-  let cachedData;
-  try {
-    cachedData = require(`${__dirname}/data/articles.json`);
-  } catch (e) {}
-  if (cachedData) {
-    return Promise.resolve({items: cachedData});
-  }
   return loadLineupStartingAtPage({items: []}, id, 1);
 };
 
@@ -58,6 +51,14 @@ const loadLineupArticleIds = function (lineupId) {
 };
 
 const loadNArticles = function (accumulator, lineupIds, requestedCount) {
+  let cachedData;
+  try {
+    cachedData = require(`${__dirname}/data/articles.json`);
+  } catch (e) {}
+  if (cachedData) {
+    return Promise.resolve({items: cachedData});
+  }
+
   if (lineupIds.length && accumulator.items.length < requestedCount) {
     const lineupId = lineupIds.shift();
     return loadLineupArticleIds(lineupId)
@@ -99,12 +100,12 @@ const parseNArticles = function (requestedCount) {
   return listLineups()
     .then((lineupIds) => {
       console.log("Done loading lineup ids");
-      fs.writeFileSync(`lineups.json`, JSON.stringify(lineupIds), {encoding: 'utf8'});
+      fs.writeFileSync(`${__dirname}/data/lineups.json`, JSON.stringify(lineupIds), {encoding: 'utf8'});
       return loadNArticles({items: []}, lineupIds, parseInt(requestedCount));
     })
     .then((articleData) => {
       console.log("Done loading article ids");
-      fs.writeFileSync(`articles.json`, JSON.stringify(articleData.items), {encoding: 'utf8'});
+      fs.writeFileSync(`${__dirname}/data/articles.json`, JSON.stringify(articleData.items), {encoding: 'utf8'});
       console.log("Now processing data");
       return Promise.map(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId));
     })
