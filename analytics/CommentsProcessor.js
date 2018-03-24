@@ -3,7 +3,10 @@ const RequestPromise = require('request-promise');
 
 const VIA_FOURA_URL = 'https://api.viafoura.co/v2/radio-canada.ca';
 const MICROSOFT_SENTIMENT_URL = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment';
-const MICROSOFT_ACCESS_KEY = '326f1d20496348fbac1f511760a10736';
+//const MICROSOFT_ACCESS_KEY = '326f1d20496348fbac1f511760a10736';
+const MICROSOFT_ACCESS_KEY = 'e702f68cd57c4fc59b095b2dd2c4788f';
+
+const TIMEOUT = 10000;
 
 function mean(x) {
   if (!x || !x.length) {
@@ -28,19 +31,20 @@ function standardDeviation(x) {
 }
 
 function loadCommentsForPageWithOffset(accumulator, pageId, offset) {
-  console.log("Now querying with offset", offset);
+  console.log("Now querying with offset", offset, "for page", pageId);
   const qs = {
     show: 'recent'
   };
   if (offset) {
     qs['offset'] = offset;
   }
+  const now = Date.now();
 
   return RequestPromise({
     uri: `${VIA_FOURA_URL}/pages/${pageId}/comments`,
     qs,
     json: true,
-    timeout: 10000
+    timeout: TIMEOUT
   })
   .then((response) => {
     accumulator.count = response.result.total_count;
@@ -56,6 +60,9 @@ function loadCommentsForPageWithOffset(accumulator, pageId, offset) {
     }
     return accumulator;
   }).catch((e) => {
+    if (Date.now() - now >= TIMEOUT) {
+      console.log(`Timed out for ${pageId}`);
+    }
     return accumulator;
   });
 }
@@ -74,6 +81,8 @@ function listCommentsForPage(pageId) {
       return acc;
     }, {});
 
+    console.log("Retrieved", data.count, "comments for page", pageId);
+
     return {
       pageId,
       count: data.count,
@@ -84,6 +93,7 @@ function listCommentsForPage(pageId) {
   })
   .catch((e) => {
     console.error(e);
+    return null;
   });
 }
 
@@ -94,7 +104,12 @@ function listSentiment(phrases) {
       "id" : index,
       "text" : phrase
     };
-  });
+  }).filter((doc) => !!doc.text);
+
+  if (!documents.length) {
+    console.log("No documents to process for phrases", phrases);
+    return Promise.resolve([]);
+  }
 
   return RequestPromise({
     uri: MICROSOFT_SENTIMENT_URL,
@@ -110,7 +125,10 @@ function listSentiment(phrases) {
   .then((response) => {
     return response.documents;
   })
-  .catch((e) => console.error(e));
+  .catch((e) => {
+    console.error("Microsoft error", e.message);
+    return [];
+  });
 }
 
 function retrieveViaFouraPage(path) {
@@ -127,6 +145,8 @@ module.exports = function(articlePath) {
     .then((comments) => {
       return listSentiment(comments.phrases)
         .then((sentiment) => {
+          console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
+
           const sentimentScores = sentiment.map((doc) => doc.score);
           return {
             rcUrl: articlePath,
@@ -135,7 +155,7 @@ module.exports = function(articlePath) {
             read: comments.read,
             mean: mean(sentimentScores),
             standardDeviation: standardDeviation(sentimentScores)
-          }
+          };
         });
     });
 };

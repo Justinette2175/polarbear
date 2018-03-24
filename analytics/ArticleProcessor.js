@@ -11,15 +11,7 @@ const RC_VALIDATION_URL = 'http://api.radio-canada.ca/validationMedia/v1/Validat
 
 const BASE_RC_URL = 'http://ici.radio-canada.ca';
 
-const getValidationParams = function (params) {
-  return Object.assign({
-    connectionType: "broadband",
-    output: "json",
-    multibitrate: true,
-    appCode: "medianet",
-    idMedia: 7869208
-  }, params || {});
-};
+const TIMEOUT = 10000;
 
 const loadArticleMetadata = function (id) {
   return RequestPromise({
@@ -27,24 +19,46 @@ const loadArticleMetadata = function (id) {
     headers: {
       Authorization: `Client-Key ${ACCESS_KEY}`
     },
-    json: true
+    json: true,
+    timeout: TIMEOUT
   });
 };
 
 const processArticleMetadata = function (metadata) {
   return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''))
     .then((commentData) => {
-      return Object.assign({id}, {
+      console.log("Done processing comments for article", metadata.id);
+
+      if (!commentData.count) {
+        return null;
+      }
+      const topics = [];
+      try {
+        topics.push(metadata.themeTag.name);
+        const subthemes = metadata.subThemeTags.map((t) => t.name);
+        topics.push(...subthemes);
+        const regions = metadata.regionTags.map((t) => t.name);
+        topics.push(...regions);
+      } catch (e) {}
+
+      const finalData = Object.assign({id: metadata.id}, {
         title: metadata.title,
         summary: striptags(metadata.summary),
-        text: striptags(metadata.body.html)
+        text: striptags(metadata.body.html),
+        topics
       }, commentData);
+
+      console.log("...data constructed");
+      console.log("   ");
+
+      return finalData;
     });
 };
 
 const processArticle = function (id) {
   return loadArticleMetadata(id)
-    .then((metadata) => processArticleMetadata(metadata));
+    .then((metadata) => processArticleMetadata(metadata))
+    .catch((e) => null);
 };
 
 exports.processArticle = processArticle;
