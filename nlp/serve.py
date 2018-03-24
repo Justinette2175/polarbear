@@ -7,9 +7,9 @@ from model import get_trained_model
 
 model = get_trained_model()
 
-def assert_in(val):
+def assert_in(val, err):
   if not val:
-    raise HTTPError(status=400)
+    raise HTTPError(status=400, body=err)
 
 def extract_sentiment(phrase):
   tb = Blobber(pos_tagger=PatternTagger(), analyzer=PatternAnalyzer())
@@ -18,13 +18,14 @@ def extract_sentiment(phrase):
 @post('/predict')
 def predict():
   json = request.json
-  assert_in(isinstance(json, dict))
-  assert_in('title' in json)
+  assert_in(isinstance(json, dict), 'json is not a dictionnary')
+  assert_in('title' in json, 'no attribute title in json')
   title = json['title']
-  assert_in(isinstance(title, str))
+  isstr = isinstance(title, str) or isinstance(title, unicode)
+  assert_in(isstr, 'title is not a string')
 
   return {
-      'comments': model.predict(title)
+      'comments': model.predict(str(title))
     }
 
 @post('/sentiment')
