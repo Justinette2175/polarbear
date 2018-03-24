@@ -31,18 +31,21 @@ const loadArticleMetadata = function (id) {
   });
 };
 
-const processArticle = function (id) {
-  return loadArticleMetadata(id)
-    .then((metadata) => {
-      return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''))
-        .then((commentData) => {
-          return Object.assign({id}, {
-            title: metadata.title,
-            summary: striptags(metadata.summary),
-            text: striptags(metadata.body.html)
-          }, commentData);
-        })
+const processArticleMetadata = function (metadata) {
+  return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''))
+    .then((commentData) => {
+      return Object.assign({id}, {
+        title: metadata.title,
+        summary: striptags(metadata.summary),
+        text: striptags(metadata.body.html)
+      }, commentData);
     });
 };
 
-module.exports = processArticle;
+const processArticle = function (id) {
+  return loadArticleMetadata(id)
+    .then((metadata) => processArticleMetadata(metadata));
+};
+
+exports.processArticle = processArticle;
+exports.processArticleMetadata = processArticleMetadata;
