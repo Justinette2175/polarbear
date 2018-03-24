@@ -2,7 +2,7 @@ const Promise = require('bluebird');
 const RequestPromise = require('request-promise');
 const fs = require('fs');
 
-const processComments = require('./CommentsProcessor');
+const CommentsProcessor = require('./CommentsProcessor');
 const ArticleProcessor = require('./ArticleProcessor');
 
 const ACCESS_KEY = 'bf9ac6d8-9ad8-4124-a63c-7b7bdf22a2ee';
@@ -114,6 +114,7 @@ const parseNArticles = function (requestedCount, countOnly) {
 
 parseNArticles(process.argv[2] || DEFAULT_ARTICLE_COUNT, process.argv[3] && process.argv[3] === 'count').then((data) => {
   const dataSet = data.filter((x) => !!x);
-  console.log("Loaded", dataSet.length, "articles with comment data among", data.length, "articles loaded");
+  const commentCount = dataSet.reduce((a, b) => a + b.count, 0);
+  console.log("Loaded", dataSet.length, "articles with ", commentCount, "comments data among", data.length, "articles requested");
   fs.writeFileSync(`data-${Date.now()}.json`, JSON.stringify(dataSet), {encoding: 'utf8'});
 });

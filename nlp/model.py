@@ -2,7 +2,7 @@ from bagofwords import BagOfWords
 import json
 
 def get_trained_model():
-  with open("../notebook/data-1521902587809.json", "r") as f:
+  with open("../data-1521907207506.json", "r") as f:
       data = json.load(f)
 
   b = BagOfWords()

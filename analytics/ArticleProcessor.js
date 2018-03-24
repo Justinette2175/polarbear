@@ -2,7 +2,7 @@ const Promise = require('bluebird');
 const RequestPromise = require('request-promise');
 const striptags = require('striptags');
 
-const processComments = require('./CommentsProcessor');
+const CommentsProcessor = require('./CommentsProcessor');
 
 const ACCESS_KEY = 'bf9ac6d8-9ad8-4124-a63c-7b7bdf22a2ee';
 const RC_NEURO_URL = 'https://services.radio-canada.ca/hackathon/neuro/v1';
@@ -25,7 +25,7 @@ const loadArticleMetadata = function (id) {
 };
 
 const processArticleMetadata = function (metadata, onlyCommentCount) {
-  return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''), onlyCommentCount)
+  return CommentsProcessor.processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''), onlyCommentCount)
     .then((commentData) => {
       console.log("Done processing comments for article", metadata.id);
 

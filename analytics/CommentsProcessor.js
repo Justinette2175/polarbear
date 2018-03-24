@@ -6,6 +6,8 @@ const MICROSOFT_SENTIMENT_URL = 'https://westus.api.cognitive.microsoft.com/text
 //const MICROSOFT_ACCESS_KEY = '326f1d20496348fbac1f511760a10736';
 const MICROSOFT_ACCESS_KEY = 'e702f68cd57c4fc59b095b2dd2c4788f';
 
+const LOCAL_SENTIMENT_URL = 'http://localhost:4567/sentiment';
+
 const TIMEOUT = 10000;
 
 function mean(x) {
@@ -131,6 +133,31 @@ function listSentiment(phrases) {
   });
 }
 
+function listSentimentLocal(phrases) {
+  phrases = phrases.filter((x) => !!x);
+
+  if (!documents.length) {
+    console.log("No documents to process for phrases", phrases);
+    return Promise.resolve([]);
+  }
+
+  return RequestPromise({
+    uri: LOCAL_SENTIMENT_URL,
+    method : 'POST',
+    body: {
+      phrases
+    },
+    json: true
+  })
+  .then((response) => {
+    return response.sentiments;
+  })
+  .catch((e) => {
+    console.error("Local error", e.message);
+    return [];
+  });
+}
+
 function retrieveViaFouraPage(path) {
   return RequestPromise({
     uri: `${VIA_FOURA_URL}/pages/${encodeURIComponent(path)}`,
@@ -139,9 +166,13 @@ function retrieveViaFouraPage(path) {
   });
 }
 
-module.exports = function(articlePath, onlyCommentCount) {
+const retrieveCommentPhrases = function(articlePath) {
   return retrieveViaFouraPage(articlePath)
-    .then((articleData) => listCommentsForPage(String(articleData.result.id)))
+    .then((articleData) => listCommentsForPage(String(articleData.result.id)));
+};
+
+const processComments = function(articlePath, onlyCommentCount) {
+  return retrieveCommentPhrases(articlePath)
     .then((comments) => {
       const basicData = {
         rcUrl: articlePath,
@@ -168,3 +199,6 @@ module.exports = function(articlePath, onlyCommentCount) {
         });
     });
 };
+
+exports.processComments = processComments;
+exports.retrieveCommentPhrases = retrieveCommentPhrases;
