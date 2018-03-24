@@ -14,7 +14,7 @@ def predict():
   assert_in(isinstance(json, dict), 'json is not a dictionnary')
   assert_in('title' in json, 'no attribute title in json')
   title = json['title']
-  isstr = isinstance(title, str) | isinstance(title, unicode)
+  isstr = isinstance(title, str) or isinstance(title, unicode)
   assert_in(isstr, 'title is not a string')
 
   return {

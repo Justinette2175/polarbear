@@ -34,3 +34,5 @@ jspm_packages
 .node_repl_historylog
 
 .DS_Store
+*__pycache__*
+*.pyc
