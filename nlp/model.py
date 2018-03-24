@@ -3,8 +3,8 @@ import json
 import gzip
 
 def get_trained_model():
-  with gzip.open("../data/lapresse.json.gz", "r") as f:
-      data = json.load(f)
+  with gzip.open("../data/lapresse.json.gz", "rb") as f:
+      data = json.loads(f.read().decode('utf-8'))
 
   def _map(x):
     if x > 1 and x < 5:
