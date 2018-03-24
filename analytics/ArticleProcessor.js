@@ -25,7 +25,7 @@ const loadArticleMetadata = function (id) {
 };
 
 const processArticleMetadata = function (metadata, onlyCommentCount) {
-  return CommentsProcessor.processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''), onlyCommentCount)
+  return CommentsProcessor.retrieveCommentPhrases(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''))
     .then((commentData) => {
       console.log("Done processing comments for article", metadata.id);
 

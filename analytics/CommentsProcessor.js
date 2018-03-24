@@ -6,7 +6,7 @@ const MICROSOFT_SENTIMENT_URL = 'https://westus.api.cognitive.microsoft.com/text
 //const MICROSOFT_ACCESS_KEY = '326f1d20496348fbac1f511760a10736';
 const MICROSOFT_ACCESS_KEY = 'e702f68cd57c4fc59b095b2dd2c4788f';
 
-const LOCAL_SENTIMENT_URL = 'http://localhost:4567/sentiment';
+const LOCAL_SENTIMENT_URL = 'http://localhost:8081/sentiment';
 
 const TIMEOUT = 10000;
 
@@ -136,7 +136,7 @@ function listSentiment(phrases) {
 function listSentimentLocal(phrases) {
   phrases = phrases.filter((x) => !!x);
 
-  if (!documents.length) {
+  if (!phrases.length) {
     console.log("No documents to process for phrases", phrases);
     return Promise.resolve([]);
   }
@@ -171,7 +171,21 @@ const retrieveCommentPhrases = function(articlePath) {
     .then((articleData) => listCommentsForPage(String(articleData.result.id)));
 };
 
-const processComments = function(articlePath, onlyCommentCount) {
+const processComments = function(comments) {
+  return listSentimentLocal(comments.phrases)
+    .then((sentiment) => {
+      console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
+
+      const sentimentScores = sentiment.map((doc) => doc.score);
+
+      return {
+        sentimentAverage: mean(sentimentScores),
+        sentimentStdDev: standardDeviation(sentimentScores)
+      };
+    });
+};
+
+const retrieveAndProcessComments = function(articlePath, onlyCommentCount) {
   return retrieveCommentPhrases(articlePath)
     .then((comments) => {
       const basicData = {
@@ -186,19 +200,11 @@ const processComments = function(articlePath, onlyCommentCount) {
         console.log("Listing only comment count for page", comments.pageId);
         return basicData;
       }
-      return listSentiment(comments.phrases)
-        .then((sentiment) => {
-          console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
-
-          const sentimentScores = sentiment.map((doc) => doc.score);
-
-          basicData.mean = mean(sentimentScores);
-          basicData.standardDeviation = standardDeviation(sentimentScores);
-
-          return basicData;
-        });
+      
+      return processComments(comments);
     });
 };
 
-exports.processComments = processComments;
+exports.retrieveAndProcessComments = retrieveAndProcessComments;
 exports.retrieveCommentPhrases = retrieveCommentPhrases;
+exports.processComments = processComments;
