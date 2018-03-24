@@ -2,7 +2,7 @@ const Promise = require('bluebird');
 const RequestPromise = require('request-promise');
 const striptags = require('striptags');
 
-const processComments = require('./CommentsProcessor');
+const CommentsProcessor = require('./CommentsProcessor');
 
 const ACCESS_KEY = 'bf9ac6d8-9ad8-4124-a63c-7b7bdf22a2ee';
 const RC_NEURO_URL = 'https://services.radio-canada.ca/hackathon/neuro/v1';
@@ -11,7 +11,7 @@ const RC_VALIDATION_URL = 'http://api.radio-canada.ca/validationMedia/v1/Validat
 
 const BASE_RC_URL = 'http://ici.radio-canada.ca';
 
-const TIMEOUT = 10000;
+const TIMEOUT = 5000;
 
 const loadArticleMetadata = function (id) {
   return RequestPromise({
@@ -20,12 +20,12 @@ const loadArticleMetadata = function (id) {
       Authorization: `Client-Key ${ACCESS_KEY}`
     },
     json: true,
-    timeout: TIMEOUT
+    timeout: 1000
   });
 };
 
 const processArticleMetadata = function (metadata, onlyCommentCount) {
-  return processComments(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''), onlyCommentCount)
+  return CommentsProcessor.retrieveCommentPhrases(metadata.canonicalWebLink.href.replace(BASE_RC_URL, ''))
     .then((commentData) => {
       console.log("Done processing comments for article", metadata.id);
 
@@ -58,7 +58,10 @@ const processArticleMetadata = function (metadata, onlyCommentCount) {
 const processArticle = function (id, onlyCommentCount) {
   return loadArticleMetadata(id)
     .then((metadata) => processArticleMetadata(metadata, onlyCommentCount))
-    .catch((e) => null);
+    .catch((e) => {
+      console.log("load message error for id", id, "and message", e.message);
+      return null
+    });
 };
 
 exports.processArticle = processArticle;

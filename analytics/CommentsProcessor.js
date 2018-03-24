@@ -6,7 +6,9 @@ const MICROSOFT_SENTIMENT_URL = 'https://westus.api.cognitive.microsoft.com/text
 //const MICROSOFT_ACCESS_KEY = '326f1d20496348fbac1f511760a10736';
 const MICROSOFT_ACCESS_KEY = 'e702f68cd57c4fc59b095b2dd2c4788f';
 
-const TIMEOUT = 10000;
+const LOCAL_SENTIMENT_URL = 'http://localhost:8081/sentiment';
+
+const TIMEOUT = 5000;
 
 function mean(x) {
   if (!x || !x.length) {
@@ -131,6 +133,31 @@ function listSentiment(phrases) {
   });
 }
 
+function listSentimentLocal(phrases) {
+  phrases = phrases.filter((x) => !!x);
+
+  if (!phrases.length) {
+    console.log("No documents to process for phrases", phrases);
+    return Promise.resolve([]);
+  }
+
+  return RequestPromise({
+    uri: LOCAL_SENTIMENT_URL,
+    method : 'POST',
+    body: {
+      phrases
+    },
+    json: true
+  })
+  .then((response) => {
+    return response.sentiments;
+  })
+  .catch((e) => {
+    console.error("Local error", e.message);
+    return [];
+  });
+}
+
 function retrieveViaFouraPage(path) {
   return RequestPromise({
     uri: `${VIA_FOURA_URL}/pages/${encodeURIComponent(path)}`,
@@ -139,9 +166,25 @@ function retrieveViaFouraPage(path) {
   });
 }
 
-module.exports = function(articlePath, onlyCommentCount) {
+const retrieveCommentPhrases = function(articlePath) {
   return retrieveViaFouraPage(articlePath)
-    .then((articleData) => listCommentsForPage(String(articleData.result.id)))
+    .then((articleData) => listCommentsForPage(String(articleData.result.id)));
+};
+
+const processComments = function(comments) {
+  return listSentimentLocal(comments.phrases)
+    .then((sentiment) => {
+      console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
+
+      return {
+        sentimentAverage: mean(sentiment),
+        sentimentStdDev: standardDeviation(sentiment)
+      };
+    });
+};
+
+const retrieveAndProcessComments = function(articlePath, onlyCommentCount) {
+  return retrieveCommentPhrases(articlePath)
     .then((comments) => {
       const basicData = {
         rcUrl: articlePath,
@@ -155,16 +198,11 @@ module.exports = function(articlePath, onlyCommentCount) {
         console.log("Listing only comment count for page", comments.pageId);
         return basicData;
       }
-      return listSentiment(comments.phrases)
-        .then((sentiment) => {
-          console.log(`Page ${comments.pageId} had ${comments.count} comments which mapped to ${sentiment.length} sentiments`);
-
-          const sentimentScores = sentiment.map((doc) => doc.score);
-
-          basicData.mean = mean(sentimentScores);
-          basicData.standardDeviation = standardDeviation(sentimentScores);
-
-          return basicData;
-        });
+      
+      return processComments(comments);
     });
 };
+
+exports.retrieveAndProcessComments = retrieveAndProcessComments;
+exports.retrieveCommentPhrases = retrieveCommentPhrases;
+exports.processComments = processComments;

@@ -1,8 +1,9 @@
 const Promise = require('bluebird');
 const RequestPromise = require('request-promise');
 const fs = require('fs');
+const striptags = require('striptags');
 
-const processComments = require('./CommentsProcessor');
+const CommentsProcessor = require('./CommentsProcessor');
 const ArticleProcessor = require('./ArticleProcessor');
 
 const ACCESS_KEY = 'bf9ac6d8-9ad8-4124-a63c-7b7bdf22a2ee';
@@ -95,8 +96,16 @@ const listLineups = function() {
   .then((result) => result.items.map((item) => item.id));
 };
 
-const parseNArticles = function (requestedCount, countOnly) {
+const loadAndSaveNArticles = function (requestedCount, countOnly) {
   console.log("Must load and process", requestedCount, "articles");
+  let cachedData;
+  try {
+    cachedData = require(`${__dirname}/data/article-data.json`);
+  } catch (e) {}
+  if (cachedData) {
+    return Promise.resolve(cachedData);
+  }
+
   return listLineups()
     .then((lineupIds) => {
       console.log("Done loading lineup ids");
@@ -107,13 +116,33 @@ const parseNArticles = function (requestedCount, countOnly) {
       console.log("Done loading article ids");
       fs.writeFileSync(`${__dirname}/data/articles.json`, JSON.stringify(articleData.items), {encoding: 'utf8'});
       console.log("Now processing data");
-      return Promise.map(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId, countOnly));
+      return Promise.mapSeries(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId, countOnly));
     })
-    
+    .then((fullArticlesData) => {
+      console.log("Done loading article data");
+      fs.writeFileSync(`${__dirname}/data/article-data.json`, JSON.stringify(fullArticlesData.filter((x) => !!x)), {encoding: 'utf8'});
+      return fullArticlesData.filter((x) => !!x);
+    });
 };
 
-parseNArticles(process.argv[2] || DEFAULT_ARTICLE_COUNT, process.argv[3] && process.argv[3] === 'count').then((data) => {
-  const dataSet = data.filter((x) => !!x);
-  console.log("Loaded", dataSet.length, "articles with comment data among", data.length, "articles loaded");
-  fs.writeFileSync(`data-${Date.now()}.json`, JSON.stringify(dataSet), {encoding: 'utf8'});
-});
+const parseFullArticleData = function (fullArticlesData) {
+  return Promise.mapSeries(fullArticlesData.filter((x) => !!x), 
+    (articleData) => CommentsProcessor.processComments({phrases: articleData.phrases, count: articleData.count, pageId: articleData.viaFouraPageId})
+      .then((articleCommentData) => {
+        articleData.title = striptags(articleData.title);
+        return Object.assign({}, articleData, articleCommentData);
+      })
+  );
+};
+
+const callRequestedCount = process.argv[2] || DEFAULT_ARTICLE_COUNT;
+
+loadAndSaveNArticles(callRequestedCount, process.argv[3] && process.argv[3] === 'count')
+  .then((fullArticlesData) => parseFullArticleData(fullArticlesData))
+  .then((data) => {
+    const dataSet = data.filter((x) => !!x);
+    const commentCount = dataSet.reduce((a, b) => a + b.count, 0);
+    console.log("Loaded", dataSet.length, "articles with ", commentCount, "comments data among", callRequestedCount, "articles requested");
+    fs.writeFileSync(`data-${Date.now()}.json`, JSON.stringify(dataSet), {encoding: 'utf8'});
+    console.log("DONE");
+  });
