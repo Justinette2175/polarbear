@@ -11,7 +11,7 @@ const RC_VALIDATION_URL = 'http://api.radio-canada.ca/validationMedia/v1/Validat
 
 const BASE_RC_URL = 'http://ici.radio-canada.ca';
 
-const TIMEOUT = 10000;
+const TIMEOUT = 5000;
 
 const loadArticleMetadata = function (id) {
   return RequestPromise({
@@ -20,7 +20,7 @@ const loadArticleMetadata = function (id) {
       Authorization: `Client-Key ${ACCESS_KEY}`
     },
     json: true,
-    timeout: TIMEOUT
+    timeout: 1000
   });
 };
 
@@ -58,7 +58,10 @@ const processArticleMetadata = function (metadata, onlyCommentCount) {
 const processArticle = function (id, onlyCommentCount) {
   return loadArticleMetadata(id)
     .then((metadata) => processArticleMetadata(metadata, onlyCommentCount))
-    .catch((e) => null);
+    .catch((e) => {
+      console.log("load message error for id", id, "and message", e.message);
+      return null
+    });
 };
 
 exports.processArticle = processArticle;

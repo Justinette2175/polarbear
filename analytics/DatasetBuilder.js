@@ -115,7 +115,7 @@ const loadAndSaveNArticles = function (requestedCount, countOnly) {
       console.log("Done loading article ids");
       fs.writeFileSync(`${__dirname}/data/articles.json`, JSON.stringify(articleData.items), {encoding: 'utf8'});
       console.log("Now processing data");
-      return Promise.map(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId, countOnly));
+      return Promise.mapSeries(articleData.items, (articleId) => ArticleProcessor.processArticle(articleId, countOnly));
     })
     .then((fullArticlesData) => {
       console.log("Done loading article data");
@@ -125,7 +125,7 @@ const loadAndSaveNArticles = function (requestedCount, countOnly) {
 };
 
 const parseFullArticleData = function (fullArticlesData) {
-  return Promise.map(fullArticlesData.filter((x) => !!x), 
+  return Promise.mapSeries(fullArticlesData.filter((x) => !!x), 
     (articleData) => CommentsProcessor.processComments({phrases: articleData.phrases, count: articleData.count, pageId: articleData.viaFouraPageId})
       .then((articleCommentData) => {
         return Object.assign({}, articleData, articleCommentData);

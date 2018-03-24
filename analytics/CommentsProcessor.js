@@ -8,7 +8,7 @@ const MICROSOFT_ACCESS_KEY = 'e702f68cd57c4fc59b095b2dd2c4788f';
 
 const LOCAL_SENTIMENT_URL = 'http://localhost:8081/sentiment';
 
-const TIMEOUT = 10000;
+const TIMEOUT = 5000;
 
 function mean(x) {
   if (!x || !x.length) {
