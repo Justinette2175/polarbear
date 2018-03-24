@@ -203,7 +203,8 @@ const processComments = function(comments) {
 
       return {
         sentimentAverage: mean(sentiment),
-        sentimentStdDev: standardDeviation(sentiment)
+        sentimentStdDev: standardDeviation(sentiment),
+        sentimentSkewness: skewness(sentiment)
       };
     });
 };
