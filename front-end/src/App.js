@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TextEditor from './components/TextEditor';
 import Promise from 'bluebird';
+import Logo_horizontal from './assets/images/logo_horizontal.png'
 
 import Sidebar from './components/Sidebar';
 import Editor from './components/Editor';
@@ -59,7 +60,8 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>  
-          <Header>
+          <Header id="header">
+            <div className="logo"><img src={Logo_horizontal} alt="Logo de Polar bear: un ours rouge dans un cercle"/></div> 
           </Header>
           <Content className="main-content">
             <Sidebar/>

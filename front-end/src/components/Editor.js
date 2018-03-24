@@ -32,8 +32,9 @@ class Editor extends Component {
   render() {
     return (
       <section id="editor">
+        <h3>Titre</h3>  
         <div id="editor-title">
-          <TextArea id="title" placeholder="Votre titre" onChange={this._updateCounter.bind(this)}></TextArea>  
+          <TextArea id="title" onChange={this._updateCounter.bind(this)}></TextArea>  
         </div> 
         <h3>Résumé</h3>
         <div id="editor-summary">

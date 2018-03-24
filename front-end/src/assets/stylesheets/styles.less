@@ -1,16 +1,28 @@
 @import 'variables';
 
+* {
+  box-sizing: border-box;
+}
 .App {
   background-color:black;
   height:100vh;
   width:100vw;
   display: flex;
+  overflow:hidden;
 }
 
 .main-content {
   display:flex;
   flex:1;
   overflow:scroll;
+}
+
+#header{
+  display:flex;
+  padding:0px 30px;
+  img {
+    height:50px;
+  }
 }
 
 #sidebar{
@@ -35,15 +47,19 @@
   flex:5;
   height:auto;
   background-color: @grey;
-  padding:40px 30px;
+  padding:30px;
   display:flex;
   flex-flow:column;
   h3{
     margin-top:30px;
   }
+  textarea {
+    box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.05);
+    padding:10px 20px;
+  }
   #editor-summary{
     textarea{
-      height:100px;
+      height:80px;
     }
   }
   #editor-text{
@@ -53,8 +69,5 @@
     flex:1;
   }
   #editor-title{
-    textarea{
-      background-color:transparent !important;
-    }
   }
 }
