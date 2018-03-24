@@ -17,6 +17,23 @@ function mean(x) {
   return x.reduce((a, b) => a + b, 0) / x.length;
 }
 
+function median(x) {
+  if (!x || !x.length) {
+    return 0;
+  }
+  const sortedX = x.sort();
+
+  const middleIndex = Math.floor(x.length / 2);
+  if (x.length % 2) {
+    return sortedX[middleIndex];
+  }
+  
+  return mean([
+    sortedX[middleIndex - 1],
+    sortedX[middleIndex]
+  ]);
+}
+
 function variance(x) {
   if (!x || !x.length) {
     return 0;
@@ -30,6 +47,14 @@ function variance(x) {
 
 function standardDeviation(x) {
   return Math.sqrt(variance(x));
+}
+
+function skewness(x) {
+  if (!x || !x.length) {
+    return 0;
+  }
+
+  return (3 * (mean(x) - median(x))) / standardDeviation(x);
 }
 
 function loadCommentsForPageWithOffset(accumulator, pageId, offset) {
@@ -178,7 +203,8 @@ const processComments = function(comments) {
 
       return {
         sentimentAverage: mean(sentiment),
-        sentimentStdDev: standardDeviation(sentiment)
+        sentimentStdDev: standardDeviation(sentiment),
+        sentimentSkewness: skewness(sentiment)
       };
     });
 };
