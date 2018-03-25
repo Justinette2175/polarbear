@@ -12,9 +12,9 @@ import Editor from './components/Editor';
 import { Layout, Menu, Icon, Switch } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-// const SERVER_URL = 'http://52.179.98.111:8081/predict'
+const SERVER_URL = 'http://52.179.98.111:8081/predict'
 
-const SERVER_URL = 'http://localhost:8080/predict';
+// const SERVER_URL = 'http://localhost:8080/predict';
 
 class App extends Component {
 
@@ -30,8 +30,27 @@ class App extends Component {
     }
   }
 
-  updateData() {
-    
+  // response data sample:
+  // {
+  //   "engagement": {
+  //       "shares": 1552,
+  //       "comments": 1624,
+  //       "reactions": 0
+  //   },
+  //   "tone": {
+  //       "skewness": 0,
+  //       "average": 0,
+  //       "stdDev": 0
+  //   }
+  // }
+  updateData(json) {
+    // this.state.engagement = json.engagement;
+    const newData = {
+      "shares": 1552,
+      "comments": 1624,
+      "reactions": 0
+    };
+    this.setStateAsync({data: newData})
   }
 
   _sendContent(data) {

@@ -22,11 +22,14 @@ class BarChart extends React.Component {
 
   render() {
 
-    let values = {
-      likes: 10000, 
-      shares: 3500, 
-      comments: 8364,
-    }
+    console.log('render:', this.props.data)
+    // let values = {
+    //   likes: 10000, 
+    //   shares: 3500, 
+    //   comments: 8364,
+    // }
+
+    let values = this.props.data;// || {};
     
     const dataValues = Object.keys(values).map((key) => {
       return values[key];

@@ -5,6 +5,7 @@ import InfoSection from './InfoSection';
 class SideBar extends Component {
   constructor(props) {
     super(props);
+    console.log('SideBar received:', props.data);
   }
 
   render() {
