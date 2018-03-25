@@ -13,7 +13,7 @@ class Editor extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.automaticUpdate && this.state.counter >= 50) {
+    if (this.props.automaticUpdate && this.state.counter >= 10) {
       const text = document.getElementById('editor-text').textContent;
       const title = document.getElementById('editor-title').textContent;
       const summary = document.getElementById('editor-summary').textContent;
