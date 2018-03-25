@@ -11,10 +11,11 @@ const DUMMY_TONE_WEIGHTS = {
   'trudeau': -5,
   'couillard': -10,
   'canada': 10,
-  'chat': 20,
+  'charte': 20,
+  'chat': 40,
   'spacex': 15,
   'musk': 10,
-  'chaton': 30,
+  'chaton': 50,
   'mort': -10,
   'décès': -5,
   'arme': -20,
@@ -22,14 +23,19 @@ const DUMMY_TONE_WEIGHTS = {
   'hydro-québec': -20,
   'média': -10,
   'tramway': 5,
-  'aime': 20,
-  'adore': 40,
+  'aime': 40,
+  'adore': 60,
   'déteste': -30,
   'hais': -30,
   'magnifique': 50,
   'terrible': -20,
-  'beau': 10,
-  'belle': 10,
+  'beau': 20,
+  'belle': 20,
+  'bon': 10,
+  'bonne': 10,
+  'mauvais': -10,
+  'riche': -20,
+  'pauvre': -10,
   'libéral': -10,
   'conservateur': -10,
   'péquiste': -10,
@@ -43,6 +49,7 @@ const DUMMY_TONE_WEIGHTS = {
   'québec': 5,
   'ottawa': 5,
   'toronto': 5,
+  'vancouver': 20,
   'taxe': -10,
   'impôt': -20
 };
@@ -50,11 +57,12 @@ const DUMMY_POLARISATION_WEIGHTS = {
   'trump': 50,
   'terrorisme': 60,
   'néo-nazi': 60,
-  'islam': 60,
+  'islam': 50,
   'politique': 50,
   'trudeau': 50,
   'couillard': 10,
   'canada': 10,
+  'charte': 40,
   'chat': -20,
   'spacex': 30,
   'musk': 30,
@@ -74,6 +82,8 @@ const DUMMY_POLARISATION_WEIGHTS = {
   'terrible': 5,
   'beau': -5,
   'belle': -5,
+  'riche': 5,
+  'pauvre': 5,
   'libéral': 40,
   'conservateur': 40,
   'péquiste': 40,
@@ -87,6 +97,7 @@ const DUMMY_POLARISATION_WEIGHTS = {
   'québec': 15,
   'ottawa': 5,
   'toronto': 10,
+  'vancouver': -5,
   'taxe': 60,
   'impôt': 60
 };
@@ -136,7 +147,7 @@ const computeScore = function(wordCount, weights) {
   return wordsUsed.length ? (wordsUsed.reduce((acc, word) => {
     wordsUsedCount += wordCount[word];
     return acc += (findWordWeight(word, weights) * wordCount[word]);
-  }, 0) / wordsUsedCount) : 0;
+  }, 0) / Math.pow(wordsUsedCount, 0.9)) : 0;
 };
 
 const logistic = function (value) {
