@@ -5,7 +5,9 @@ from textblob_fr import PatternTagger, PatternAnalyzer
 
 from model import get_trained_model
 
-model = get_trained_model()
+viral_model = get_trained_model('share_count', 100, is_logistic=True)
+comment_model = get_trained_model('comment_count', 50)
+share_model = get_trained_model('share_count', 100)
 
 def assert_in(val, err):
   if not val:
@@ -24,14 +26,20 @@ def predict():
   isstr = isinstance(title, str) or isinstance(title, unicode)
   assert_in(isstr, 'title is not a string')
 
-  comment_prediction = model.predict(str(title))
-  comment_prediction = comment_prediction if comment_prediction >=0 else 0
+  comment_prediction = max(comment_model.predict(str(title)), 0)
+  share_prediction = max(share_model.predict(str(title)), 0)
+  
+  viral_prediction = viral_model.predict(str(title)) > 0
+
+  if viral_prediction:
+    comment_prediction *= 100
+    share_prediction *= 100
 
   return {
       'engagement': {
-        'comments' : comment_prediction,
+        'comments' : int(comment_prediction),
         'reactions' : 0,
-        'shares' : 0
+        'shares' : int(share_prediction)
       },
       'tone': {
         'average': 0,
