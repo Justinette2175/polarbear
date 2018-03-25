@@ -10,10 +10,9 @@ const probabilityDensityFunction = (x) => {
 }
 
 const getYValues = (numberOfValues) => {
-  console.log('getYValues')
   const yValues = [];
-  const minX = avg - 2*stdDev;
-  const maxX = avg + 2*stdDev;
+  const minX = 0//avg - 2*stdDev;
+  const maxX = 1//avg + 2*stdDev;
   const stepX = (maxX - minX) / (numberOfValues-1);
 
   for(let i = 0; i < numberOfValues; i++) {
@@ -21,14 +20,12 @@ const getYValues = (numberOfValues) => {
     const yVal = probabilityDensityFunction(xVal);
     yValues.push(yVal);
   }
-  console.log('getYValues', yValues);
   return yValues;
 }
 
 const extractFunctSteps = (avg_, stdDev_, numberOfValues) => {
-  console.log('extractFunctSteps')
-  avg = avg_ || 0;
-  stdDev = stdDev_ || 1;
+  avg = avg_ || 0.2;
+  stdDev = stdDev_ || 0.2828;
 
   return getYValues(numberOfValues)
 }

@@ -3,6 +3,8 @@ import { Doughnut } from 'react-chartjs-2';
 import COLORS from '../../helpers/colors';
 import pattern from 'patternomaly';
 
+import statsNoral from '../../utils/statNormalFunc';
+
 class DoughnutChart extends React.Component {
 
   constructor(props) {
@@ -21,11 +23,19 @@ class DoughnutChart extends React.Component {
   }
 
   render() {
+    const rawData = this.props.data || {};
+    const avg = rawData.average;
+    const stdDev = rawData.stdDev;
+    const vals = statsNoral.extractFunctSteps(avg, stdDev, 5);
+
+    const positif = vals[4] + vals[3];
+    const neutre = vals[2];
+    const negatif = vals[0] + vals[1];
 
     let values = {
-      positif: 10000, 
-      neutre: 3500, 
-      negatif: 8364,
+      positif,
+      neutre,
+      negatif,
     }
     
     const dataValues = Object.keys(values).map((key) => {

@@ -22,9 +22,9 @@ class BarChart extends React.Component {
 
   render() {
     let values = this.props.data || {};
-    const reactions = values.reactions || 0;
-    const shares = values.shares || 0;
-    const comments = values.comments || 0;
+    const reactions = values.reactions || 10;
+    const shares = values.shares || 2;
+    const comments = values.comments || 5;
     const dataValues = [reactions, shares, comments];
 
     const colorsArray = this.makeColors();

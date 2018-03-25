@@ -15,7 +15,6 @@ class LineChart extends React.Component {
     const avg = rawData.average;
     const stdDev = rawData.stdDev;
     const yValues = statsNoral.extractFunctSteps(avg, stdDev, 7);
-    console.log('yValues', yValues);
     
     const data = {
       labels: ["Negatif", "", "", "Neutre", "", "", "Positif"],
