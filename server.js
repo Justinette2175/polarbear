@@ -35,9 +35,7 @@ app.post('/analysis', (req, res) => {
     .then((data) => {
       return loadModel(req.body.title, req.body.summary, req.body.text)
         .then((modelData) => {
-          data.engagement.comments = modelData.comments;
-          data.engagement.shares = modelData.shares;
-          data.engagement.reactions = modelData.reactions;
+          data.engagement = modelData.engagement;
 
           return data;
         })
