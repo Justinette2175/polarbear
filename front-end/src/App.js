@@ -12,7 +12,7 @@ import Editor from './components/Editor';
 import { Layout, Menu, Icon, Switch } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-const SERVER_URL = 'http://52.179.98.111:8081/predict'
+const SERVER_URL = 'http://52.179.98.111:3000/analysis'
 
 // const SERVER_URL = 'http://localhost:8080/predict';
 
@@ -44,17 +44,22 @@ class App extends Component {
   //   }
   // }
   updateData(json) {
-    // this.state.engagement = json.engagement;
     const newData = {
-      "shares": 1552,
-      "comments": 1624,
-      "reactions": 0
+      "engagement": {
+        "shares": 1552,
+        "comments": 1624,
+        "reactions": 3333
+      },
+      "tone": {
+        "skewness": 0,
+        "average": 0,
+        "stdDev": 0
+      }
     };
     this.setStateAsync({data: newData})
   }
 
   _sendContent(data) {
-    console.log('sending content, ', data)
     fetch(SERVER_URL, {
       body: JSON.stringify(data), // must match 'Content-Type' header
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -68,6 +73,9 @@ class App extends Component {
       // referrer: 'no-referrer', // *client, no-referrer
     })
     .then(response => response.json())
+    // debug ----------------------------------------------------------
+    .catch((e) => 'better chance next time')
+    // debug ----------------------------------------------------------
     .then((json) => {
       return this.updateData(json)
     }) 
@@ -103,9 +111,6 @@ class App extends Component {
   }
 
   render() {
-
-    
-
     return (
       <div className="App">
         <Layout>  

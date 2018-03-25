@@ -6,7 +6,6 @@ import DoughnutChart from './charts/DoughnutChart';
 class DataSection extends Component {
   constructor(props) {
     super(props);
-    console.log('DataSection received:', props.data);
   }
 
   render() {
@@ -14,14 +13,18 @@ class DataSection extends Component {
       <section id="data-sections-wrapper">
         <div className="data-section">
           <BarChart
-              data={this.props.data}
+              data={this.props.data.engagement}
           />
         </div>
         <div className="data-section">
-          <LineChart/>
+          <LineChart
+              data={this.props.data.tone}
+          />
         </div>
         <div className="data-section">
-          <DoughnutChart/>
+          <DoughnutChart
+              data={this.props.data.tone}
+          />
         </div>
       </section>
     )
