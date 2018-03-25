@@ -8,7 +8,6 @@ const DUMMY_TONE_WEIGHTS = {
   'terrorisme': -15,
   'politique': -10,
   'néo-nazi': -50,
-  'islam': -5,
   'trudeau': -5,
   'couillard': -10,
   'canada': 10,
