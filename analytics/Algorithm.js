@@ -1,12 +1,14 @@
 const Promise = require('bluebird');
 
-const LOGICTIC_STEEPNESS = 0.01;
+const LOGICTIC_STEEPNESS = 0.3;
 const LOGICTIC_CENTER = 0;
 
 const DUMMY_TONE_WEIGHTS = {
   'trump': -20,
   'terrorisme': -15,
   'politique': -10,
+  'néo-nazi': -50,
+  'islam': -5,
   'trudeau': -5,
   'couillard': -10,
   'canada': 10,
@@ -26,6 +28,7 @@ const DUMMY_TONE_WEIGHTS = {
   'déteste': -30,
   'hais': -30,
   'magnifique': 50,
+  'terrible': -20,
   'beau': 10,
   'belle': 10,
   'libéral': -10,
@@ -47,6 +50,8 @@ const DUMMY_TONE_WEIGHTS = {
 const DUMMY_POLARISATION_WEIGHTS = {
   'trump': 50,
   'terrorisme': 60,
+  'néo-nazi': 60,
+  'islam': 60,
   'politique': 50,
   'trudeau': 50,
   'couillard': 10,
@@ -62,28 +67,29 @@ const DUMMY_POLARISATION_WEIGHTS = {
   'hydro-québec': 10,
   'média': 40,
   'tramway': 40,
-  'aime': -2,
-  'adore': -5,
+  'aime': -10,
+  'adore': -20,
   'déteste': 5,
   'hais': 10,
   'magnifique': -10,
+  'terrible': 5,
   'beau': -5,
   'belle': -5,
-  'libéral': 20,
-  'conservateur': 20,
-  'péquiste': 20,
-  'caquiste': 20,
-  'caq': 20,
-  'solidaire': 20,
-  'npd': 20,
-  'qs': 20,
-  'pq': 20,
+  'libéral': 40,
+  'conservateur': 40,
+  'péquiste': 40,
+  'caquiste': 40,
+  'caq': 40,
+  'solidaire': 40,
+  'npd': 40,
+  'qs': 40,
+  'pq': 40,
   'montréal': 10,
   'québec': 15,
   'ottawa': 5,
   'toronto': 10,
-  'taxe': 50,
-  'impôt': 50
+  'taxe': 60,
+  'impôt': 60
 };
 
 const wordify = function (word) {
@@ -126,19 +132,23 @@ const findWordWeight = function (word, weights) {
 };
 
 const computeScore = function(wordCount, weights) {
-  return Object.keys(wordCount).reduce((acc, word) => {
+  const wordsUsed = Object.keys(wordCount);
+  let wordsUsedCount = 0;
+  return wordsUsed.length ? (wordsUsed.reduce((acc, word) => {
+    wordsUsedCount += wordCount[word];
     return acc += (findWordWeight(word, weights) * wordCount[word]);
-  }, 0);
+  }, 0) / wordsUsedCount) : 0;
 };
 
 const logistic = function (value) {
-  console.log("LOGISTIC OF", value);
   return 1 / (1 + Math.exp(-1 * LOGICTIC_STEEPNESS * (value - LOGICTIC_CENTER)));
 };
 
 const analyseText = function (title, summary, text) {
+
   return Promise.try(() => {
     const wordCounts = createWordCounts(title, summary, text);
+
     const tone = logistic(computeScore(wordCounts, DUMMY_TONE_WEIGHTS));
     const toneDistFromExtrema = 1 - (Math.abs(tone - 0.5) + 0.5);
 
@@ -150,11 +160,12 @@ const analyseText = function (title, summary, text) {
       },
       tone: {
         average: tone,
-        stdDev: logistic(computeScore(wordCounts, DUMMY_POLARISATION_WEIGHTS)) * toneDistFromExtrema * 0.8,
+        stdDev: logistic(computeScore(wordCounts, DUMMY_POLARISATION_WEIGHTS)) * Math.sqrt(toneDistFromExtrema) * 0.8,
       }
     };
   })
-  .catch(() => {
+  .catch((e) => {
+    console.log(e.message);
     return {
       engagement: {
         reactions: 0,
