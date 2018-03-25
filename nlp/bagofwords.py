@@ -1,11 +1,12 @@
 import numpy as np
 import re
 import sklearn.linear_model
+import sklearn.ensemble
 import random
 from embeddings import embed
 
 class BagOfWords:
-  def __init__(self, model_class=sklearn.linear_model.LogisticRegression, *args, **kwargs):
+  def __init__(self, model_class=sklearn.ensemble.GradientBoostingRegressor, *args, **kwargs):
     self.model_class = model_class
     self.model_args = args
     self.model_kwargs = kwargs
@@ -33,7 +34,7 @@ class BagOfWords:
     norm = np.linalg.norm(vec)
     return vec / (norm if norm > 0 else 1)
 
-  def train(self, data, N=500, split=0.8):
+  def train(self, data, N=500, split=0.6):
     words = {}
     for word in " ".join(data.keys()).split(" "):
       word = self.normalize(word)
