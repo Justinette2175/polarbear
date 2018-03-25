@@ -14,7 +14,7 @@ const { Header, Content, Footer } = Layout;
 
 const SERVER_URL = 'http://52.179.98.111:3000/analysis'
 
-// const SERVER_URL = 'http://localhost:8080/predict';
+//const SERVER_URL = 'http://localhost:3000/analysis';
 
 class App extends Component {
 
@@ -44,19 +44,7 @@ class App extends Component {
   //   }
   // }
   updateData(json) {
-    const newData = {
-      "engagement": {
-        "shares": 1552,
-        "comments": 1624,
-        "reactions": 3333
-      },
-      "tone": {
-        "skewness": 0,
-        "average": 0,
-        "stdDev": 0
-      }
-    };
-    this.setStateAsync({data: newData})
+    this.setStateAsync({data: json});
   }
 
   _sendContent(data) {
@@ -74,7 +62,21 @@ class App extends Component {
     })
     .then(response => response.json())
     // debug ----------------------------------------------------------
-    .catch((e) => 'better chance next time')
+    .catch((e) => {
+      console.log('better chance next time', e);
+      return {
+        "engagement": {
+          "shares": 1552,
+          "comments": 1624,
+          "reactions": 3333
+        },
+        "tone": {
+          "skewness": 0,
+          "average": 0,
+          "stdDev": 0
+        }
+      };
+    })
     // debug ----------------------------------------------------------
     .then((json) => {
       return this.updateData(json)
