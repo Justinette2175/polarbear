@@ -1,5 +1,8 @@
 const Promise = require('bluebird');
 
+const LOGICTIC_STEEPNESS = 0.01;
+const LOGICTIC_CENTER = 0;
+
 const DUMMY_TONE_WEIGHTS = {
   'trump': -20,
   'terrorisme': -15,
@@ -17,7 +20,29 @@ const DUMMY_TONE_WEIGHTS = {
   'guerre': -30,
   'hydro-québec': -20,
   'média': -10,
-  'tramway': 5
+  'tramway': 5,
+  'aime': 20,
+  'adore': 40,
+  'déteste': -30,
+  'hais': -30,
+  'magnifique': 50,
+  'beau': 10,
+  'belle': 10,
+  'libéral': -10,
+  'conservateur': -10,
+  'péquiste': -10,
+  'caquiste': -10,
+  'caq': -10,
+  'solidaire': -10,
+  'npd': -10,
+  'qs': -10,
+  'pq': -10,
+  'montréal': 5,
+  'québec': 5,
+  'ottawa': 5,
+  'toronto': 5,
+  'taxe': -10,
+  'impôt': -20
 };
 const DUMMY_POLARISATION_WEIGHTS = {
   'trump': 50,
@@ -36,7 +61,29 @@ const DUMMY_POLARISATION_WEIGHTS = {
   'guerre': 15,
   'hydro-québec': 10,
   'média': 40,
-  'tramway': 40
+  'tramway': 40,
+  'aime': -2,
+  'adore': -5,
+  'déteste': 5,
+  'hais': 10,
+  'magnifique': -10,
+  'beau': -5,
+  'belle': -5,
+  'libéral': 20,
+  'conservateur': 20,
+  'péquiste': 20,
+  'caquiste': 20,
+  'caq': 20,
+  'solidaire': 20,
+  'npd': 20,
+  'qs': 20,
+  'pq': 20,
+  'montréal': 10,
+  'québec': 15,
+  'ottawa': 5,
+  'toronto': 10,
+  'taxe': 50,
+  'impôt': 50
 };
 
 const wordify = function (word) {
@@ -85,7 +132,8 @@ const computeScore = function(wordCount, weights) {
 };
 
 const logistic = function (value) {
-  return 1 / (1 + Math.exp(-1 * value));
+  console.log("LOGISTIC OF", value);
+  return 1 / (1 + Math.exp(-1 * LOGICTIC_STEEPNESS * (value - LOGICTIC_CENTER)));
 };
 
 const analyseText = function (title, summary, text) {
@@ -102,7 +150,7 @@ const analyseText = function (title, summary, text) {
       },
       tone: {
         average: tone,
-        stdDev: logistic(computeScore(wordCounts, DUMMY_POLARISATION_WEIGHTS)) * toneDistFromExtrema * 2,
+        stdDev: logistic(computeScore(wordCounts, DUMMY_POLARISATION_WEIGHTS)) * toneDistFromExtrema * 0.8,
       }
     };
   })
