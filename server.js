@@ -18,6 +18,7 @@ const Algorithm = require('./analytics/Algorithm');
 
 const loadModel = function(title, summary, text) {
   return RequestPromise({
+    method: 'POST',
     uri: 'http://localhost:8081/predict',
     body: {
       title,
