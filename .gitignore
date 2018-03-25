@@ -34,3 +34,6 @@ jspm_packages
 .node_repl_historylog
 
 .DS_Store
+*.pyc
+vecs.npy
+words.pkl
