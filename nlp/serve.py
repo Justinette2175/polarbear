@@ -49,6 +49,11 @@ def predict():
     share_prediction *= 100
     reaction_prediction *= 100
 
+  if len(str(title)) == 0:
+    comment_prediction = 0
+    reaction_prediction = 0
+    share_prediction = 0
+
   return {
       'engagement': {
         'comments' : int(comment_prediction),
