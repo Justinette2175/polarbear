@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-import BarChart from './charts/BarChart';
-import LineChart from './charts/LineChart';
-import DoughnutChart from './charts/DoughnutChart';
 
-class DataSection extends Component {
+class Accessible extends Component {
   constructor(props) {
     super(props);
   }
@@ -11,12 +8,16 @@ class DataSection extends Component {
   render() {
     return (
       <section id="accessible-wrapper">
-        <div className="data-section">
-          <BarChart/>
-        </div>
+        <p>Engagement potentiel:
+          10,000 partages
+          3,000 commentaires
+          50% positif
+          40% neutre
+          10% negatif
+        </p>  
       </section>
     )
   }
 }
 
-export default DataSection;
+export default Accessible;

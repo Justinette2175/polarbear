@@ -1,6 +1,8 @@
 import React from "react";
 import { Line } from 'react-chartjs-2';
 
+import pattern from 'patternomaly';
+
 class LineChart extends React.Component {
 
   render() {
@@ -8,7 +10,7 @@ class LineChart extends React.Component {
       labels: ["Negatif", "", "", "Neutre", "", "", "Positif"],
       datasets: [{
         label: "Ton de l'engagement",
-        backgroundColor: '#f44336',
+        backgroundColor: pattern.draw('zigzag-horizontal', '#f44336'),
         borderColor: '#ff7960',
         data: [0, 10, 5, 2, 20, 30, 45],
       }]

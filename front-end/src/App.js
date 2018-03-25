@@ -5,6 +5,7 @@ import fetch from 'isomorphic-fetch';
 
 import Logo_horizontal from './assets/images/logo_horizontal.png'
 
+import Accessible from './components/Accessible';
 import Sidebar from './components/Sidebar';
 import Editor from './components/Editor';
 
@@ -106,6 +107,7 @@ class App extends Component {
             />
           </Content> 
         </Layout>  
+        <Accessible data={this.state.data}/>
       </div>
     );
   }

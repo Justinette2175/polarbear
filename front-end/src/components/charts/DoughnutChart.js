@@ -1,6 +1,7 @@
 import React from "react";
 import { Doughnut } from 'react-chartjs-2';
 import COLORS from '../../helpers/colors';
+import pattern from 'patternomaly';
 
 class DoughnutChart extends React.Component {
 
@@ -36,8 +37,11 @@ class DoughnutChart extends React.Component {
       labels: ["Positif", "Neutre", "Negatif"],
       datasets: [{
         // label: "Ton de l'engagement",
-        backgroundColor: 'rgb(255, 99, 132)',
-        backgroundColor: ['#4caf50','#ffca28', '#f44336'],
+        backgroundColor: [
+          pattern.draw('zigzag-horizontal', '#4caf50'),
+          pattern.draw('circle', '#ffca28'),
+          pattern.draw('square', '#f44336')
+        ],
         data: dataValues,
       }]
     };        

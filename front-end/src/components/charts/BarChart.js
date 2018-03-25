@@ -38,7 +38,11 @@ class BarChart extends React.Component {
       labels: ["J'aime", "Partages", "Commentaires"],
       datasets: [{
         label: "Engagement attendu",
-        backgroundColor: colorsArray,
+        backgroundColor: [
+          pattern.draw('square', '#ff7960'),
+          pattern.draw('zigzag-horizontal', '#f44336'),
+          pattern.draw('circle', '#b9000b'),
+        ],
         data: dataValues,
       }]
     };
