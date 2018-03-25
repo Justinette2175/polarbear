@@ -125,6 +125,27 @@ const loadAndSaveNArticles = function (requestedCount, countOnly) {
     });
 };
 
+const loadLaPresseArticles = function () {
+  let cachedData;
+  try {
+    cachedData = require(`${__dirname}/../data/lapresse.json`);
+  } catch (e) {}
+  if (cachedData) {
+    return Promise.resolve(cachedData);
+  }
+  return Promise.resolve([]);
+}
+
+const parseLaPresseArticle = function (articleData) {
+  return {
+    title: articleData.title,
+    summary: "",
+    text: articleData.body,
+    phrases: articleData.comments,
+    count: articleData.comments.length
+  };
+};
+
 const parseFullArticleData = function (fullArticlesData) {
   return Promise.mapSeries(fullArticlesData.filter((x) => !!x), 
     (articleData) => CommentsProcessor.processComments({phrases: articleData.phrases, count: articleData.count, pageId: articleData.viaFouraPageId})
