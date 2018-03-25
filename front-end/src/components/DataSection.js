@@ -12,13 +12,19 @@ class DataSection extends Component {
     return (
       <section id="data-sections-wrapper">
         <div className="data-section">
-          <BarChart/>
+          <BarChart
+              data={this.props.data.engagement}
+          />
         </div>
         <div className="data-section">
-          <LineChart/>
+          <LineChart
+              data={this.props.data.tone}
+          />
         </div>
         <div className="data-section">
-          <DoughnutChart/>
+          <DoughnutChart
+              data={this.props.data.tone}
+          />
         </div>
       </section>
     )

@@ -12,9 +12,9 @@ import Editor from './components/Editor';
 import { Layout, Menu, Icon, Switch } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-// const SERVER_URL = 'http://52.179.98.111:8081/predict'
+const SERVER_URL = 'http://52.179.98.111:3000/analysis'
 
-const SERVER_URL = 'http://localhost:8080/predict';
+//const SERVER_URL = 'http://localhost:3000/analysis';
 
 class App extends Component {
 
@@ -30,12 +30,24 @@ class App extends Component {
     }
   }
 
-  updateData() {
-    
+  // response data sample:
+  // {
+  //   "engagement": {
+  //       "shares": 1552,
+  //       "comments": 1624,
+  //       "reactions": 0
+  //   },
+  //   "tone": {
+  //       "skewness": 0,
+  //       "average": 0,
+  //       "stdDev": 0
+  //   }
+  // }
+  updateData(json) {
+    this.setStateAsync({data: json});
   }
 
   _sendContent(data) {
-    console.log('sending content, ', data)
     fetch(SERVER_URL, {
       body: JSON.stringify(data), // must match 'Content-Type' header
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -49,6 +61,23 @@ class App extends Component {
       // referrer: 'no-referrer', // *client, no-referrer
     })
     .then(response => response.json())
+    // debug ----------------------------------------------------------
+    .catch((e) => {
+      console.log('better chance next time', e);
+      return {
+        "engagement": {
+          "shares": 1552,
+          "comments": 1624,
+          "reactions": 3333
+        },
+        "tone": {
+          "skewness": 0,
+          "average": 0,
+          "stdDev": 0
+        }
+      };
+    })
+    // debug ----------------------------------------------------------
     .then((json) => {
       return this.updateData(json)
     }) 
@@ -84,9 +113,6 @@ class App extends Component {
   }
 
   render() {
-
-    
-
     return (
       <div className="App">
         <Layout>  

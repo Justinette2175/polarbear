@@ -21,16 +21,11 @@ class BarChart extends React.Component {
   }
 
   render() {
-
-    let values = {
-      likes: 10000, 
-      shares: 3500, 
-      comments: 8364,
-    }
-    
-    const dataValues = Object.keys(values).map((key) => {
-      return values[key];
-    })
+    let values = this.props.data || {};
+    const reactions = values.reactions || 0;
+    const shares = values.shares || 0;
+    const comments = values.comments || 0;
+    const dataValues = [reactions, shares, comments];
 
     const colorsArray = this.makeColors();
 
