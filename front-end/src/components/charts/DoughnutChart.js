@@ -22,15 +22,23 @@ class DoughnutChart extends React.Component {
     return colorsArray;
   }
 
+  precisionRound(number, precision) {
+    var factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+  }
+
   render() {
     const rawData = this.props.data || {};
     const avg = rawData.average;
     const stdDev = rawData.stdDev;
     const vals = statsNoral.extractFunctSteps(avg, stdDev, 5);
 
-    const positif = vals[4] + vals[3];
-    const neutre = vals[2];
-    const negatif = vals[0] + vals[1];
+    const sum = vals.reduce((acc, val) => {
+      return acc + val;
+    }, 0)
+    const positif = this.precisionRound((vals[4] + vals[3]) / sum * 100, 2);
+    const neutre = this.precisionRound(vals[2] / sum * 100, 2);
+    const negatif = this.precisionRound((vals[0] + vals[1]) / sum * 100, 2);
 
     let values = {
       positif,

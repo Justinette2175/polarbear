@@ -66,9 +66,9 @@ class App extends Component {
       console.log('better chance next time', e);
       return {
         "engagement": {
-          "shares": 1552,
-          "comments": 1624,
-          "reactions": 3333
+          "shares": 0,
+          "comments": 0,
+          "reactions": 0
         },
         "tone": {
           "skewness": 0,

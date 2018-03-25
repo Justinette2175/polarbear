@@ -24,8 +24,8 @@ const getYValues = (numberOfValues) => {
 }
 
 const extractFunctSteps = (avg_, stdDev_, numberOfValues) => {
-  avg = avg_ || 0.2;
-  stdDev = stdDev_ || 0.2828;
+  avg = avg_ || 0;
+  stdDev = stdDev_ || 0;
 
   return getYValues(numberOfValues)
 }
