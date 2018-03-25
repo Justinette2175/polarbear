@@ -58,6 +58,7 @@ const DUMMY_POLARISATION_WEIGHTS = {
   'terrorisme': 60,
   'néo-nazi': 60,
   'islam': 50,
+  'chrétien': 50,
   'politique': 50,
   'trudeau': 50,
   'couillard': 10,
