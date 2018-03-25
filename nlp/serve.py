@@ -24,8 +24,20 @@ def predict():
   isstr = isinstance(title, str) or isinstance(title, unicode)
   assert_in(isstr, 'title is not a string')
 
+  comment_prediction = model.predict(str(title))
+  comment_prediction = comment_prediction if comment_prediction >=0 else 0
+
   return {
-      'comments': model.predict(str(title))
+      'engagement': {
+        'comments' : comment_prediction,
+        'reactions' : 0,
+        'shares' : 0
+      },
+      'tone': {
+        'average': 0,
+        'stdDev': 0,
+        'skewness': 0
+      }
     }
 
 @post('/sentiment')
