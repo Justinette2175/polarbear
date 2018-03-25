@@ -14,9 +14,9 @@ class Editor extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.automaticUpdate && this.state.counter >= 10) {
-      const text = document.getElementById('editor-text').textContent;
-      const title = document.getElementById('editor-title').textContent;
-      const summary = document.getElementById('editor-summary').textContent;
+      const text = document.getElementById('paragraphs').value;
+      const title = document.getElementById('title').value;
+      const summary = document.getElementById('summary').value;
       console.log('sendingoverdata', {text, title, summary})
       this.setStateAsync({ counter: 0 })
         .then(() => {
