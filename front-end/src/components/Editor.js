@@ -41,16 +41,22 @@ class Editor extends Component {
       <section id="editor">
         <h2><Icon type="form" />  À vous de jouer!</h2>  
         <div id="editor-title">
-          <label forhtml="title">Titre</label>  
-          <TextArea id="title" onChange={this._updateCounter.bind(this)}></TextArea>  
+          <label>
+            Titre
+            <TextArea id="title" onChange={this._updateCounter.bind(this)}></TextArea>
+          </label>  
         </div> 
         <div id="editor-summary">
-          <label forhtml="summary">Résumé</label>    
-          <TextArea ref="summary" autosize={false} id="summary" onChange={this._updateCounter.bind(this)} />  
+          <label>
+            Résumé
+            <TextArea ref="summary" autosize={false} id="summary" onChange={this._updateCounter.bind(this)} />
+          </label>    
         </div>
         <div id="editor-text">
-          <label forhtml="paragraphs">Contenu de l'article</label>      
-          <TextArea ref="text" autosize={false} id="paragraphs" onChange={this._updateCounter.bind(this)} />  
+          <label>
+            Contenu de l'article
+            <TextArea ref="text" autosize={false} id="paragraphs" onChange={this._updateCounter.bind(this)} />  
+          </label>      
         </div>  
       </section>
     )
