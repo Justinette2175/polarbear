@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Input } from 'antd';
+import { Input, Icon } from 'antd';
 import Promise from 'bluebird';
-const { TextArea } = Input;
+const { TextArea} = Input;
 
 class Editor extends Component {
   constructor(props) {
@@ -13,12 +13,19 @@ class Editor extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.counter >= 50) {
+    if (this.props.automaticUpdate && this.state.counter >= 50) {
       const text = document.getElementById('editor-text').textContent;
       const title = document.getElementById('editor-title').textContent;
       const summary = document.getElementById('editor-summary').textContent;
       console.log('sendingoverdata', {text, title, summary})
       this.setStateAsync({ counter: 0 })
+        .then(() => {
+          this.props.sendContent({
+            title, 
+            summary, 
+            text,
+        })
+      })
     }
   }
 
@@ -32,15 +39,16 @@ class Editor extends Component {
   render() {
     return (
       <section id="editor">
-        <h3>Titre</h3>  
+        <h2><Icon type="form" />  À vous de jouer!</h2>  
+        <h3><Icon type="pushpin-o" />Titre </h3>  
         <div id="editor-title">
           <TextArea id="title" onChange={this._updateCounter.bind(this)}></TextArea>  
         </div> 
-        <h3>Résumé</h3>
+        <h3><Icon type="pushpin-o" />Résumé</h3>
         <div id="editor-summary">
           <TextArea ref="summary" autosize={false} id="paragraphs" onChange={this._updateCounter.bind(this)} />  
         </div>
-        <h3>Contenu de l'article</h3>
+        <h3><Icon type="pushpin-o" />Contenu de l'article</h3>
         <div id="editor-text">
           <TextArea ref="text" autosize={false} id="paragraphs" onChange={this._updateCounter.bind(this)} />  
         </div>  

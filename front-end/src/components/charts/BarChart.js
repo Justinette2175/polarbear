@@ -43,7 +43,7 @@ class BarChart extends React.Component {
       }]
     };
     return (
-      <div className="bar-chart-wrapper chart-wrapper">
+      <div className="bar-chart-wrapper chart-wrapper" aria-hidden="true">
         <Bar data={data}
           getElementAtEvent={(elems) => {}}                                       
           options={{

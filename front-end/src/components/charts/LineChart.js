@@ -14,7 +14,7 @@ class LineChart extends React.Component {
       }]
     };        
     return (
-      <div className="line-chart-wrapper chart-wrapper">
+      <div className="line-chart-wrapper chart-wrapper" aria-hidden="true">
         <Line data={data}
           getElementAtEvent={(elems) => {}}                                       
           options={{

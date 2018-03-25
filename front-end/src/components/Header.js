@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 class Header extends Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
@@ -12,6 +11,7 @@ class Header extends Component {
       <header>
         <h1>PolarBear</h1>  
         <img src="" alt="Le logo de Polar Bear" />
+      
       </header>
     )
   }

@@ -42,7 +42,7 @@ class DoughnutChart extends React.Component {
       }]
     };        
     return (
-      <div className="doughnut-chart-wrapper chart-wrapper">
+      <div className="doughnut-chart-wrapper chart-wrapper" aria-hidden="true">
         <Doughnut data={data}
           getElementAtEvent={(elems) => {}}                                       
           options={{

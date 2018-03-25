@@ -10,8 +10,14 @@ class SideBar extends Component {
   render() {
     return (
       <section id="sidebar">
-        <InfoSection/>
-        <DataSection/>
+        <InfoSection
+          automaticUpdate={this.props.automaticUpdate}
+          toggleAutomaticUpdate={this.props.toggleAutomaticUpdate}
+          sendDataWithButton={this.props.sendDataWithButton}
+        />
+        <DataSection
+          data={this.props.data}
+        />
       </section>
     )
   }

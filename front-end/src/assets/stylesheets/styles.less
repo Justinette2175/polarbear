@@ -1,5 +1,4 @@
 @import 'variables';
-
 * {
   box-sizing: border-box;
 }
@@ -20,8 +19,9 @@
 #header{
   display:flex;
   padding:0px 30px;
+  position:relative;
   img {
-    height:50px;
+    height:45px;
   }
 }
 
@@ -33,12 +33,32 @@
   display:flex;
   flex-flow:column;
   #info-sections-wrapper{
-    flex:3;
+
+    position:relative;
+    .button-toggle-wrapper{
+      position:absolute;
+      top:20px;
+      right:15px;
+      span{
+        margin-right:15px;
+      }
+    }
+    .update-data-button {
+      position: relative;
+      top:15px;
+      left:15px;
+    }
   }
   #data-sections-wrapper{
-    flex:5;
+    flex:1;
+    height:auto;
+    display:flex;
+    flex-flow:column;
+    justify-content: center;
+    align-items:center;
+    padding:15px;
     .chart-wrapper{
-      max-width: 350px;
+      max-width: 500px;
     }
   }
   .chart-wrapper{
@@ -53,8 +73,11 @@
   padding:30px;
   display:flex;
   flex-flow:column;
+  h2{
+    font-size:2rem;
+  }
   h3{
-    margin-top:30px;
+    margin-top:15px;
   }
   textarea {
     box-shadow: 3px 3px 2px 0px rgba(0,0,0,0.05);
@@ -73,4 +96,10 @@
   }
   #editor-title{
   }
+}
+
+.app-title{
+  position:absolute;
+  top:-40px;
+  left:-40px;
 }
