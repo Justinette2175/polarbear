@@ -12,7 +12,7 @@ import Editor from './components/Editor';
 import { Layout, Menu, Icon, Switch } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-const SERVER_URL = 'http://52.179.98.111:3000/analysis'
+const SERVER_URL = 'https://www.polarbear.press/analysis'
 
 //const SERVER_URL = 'http://localhost:3000/analysis';
 
@@ -98,9 +98,9 @@ class App extends Component {
 
 
   _sendDataWithButton() {
-    const text = document.getElementById('editor-text').textContent;
-    const title = document.getElementById('editor-title').textContent;
-    const summary = document.getElementById('editor-summary').textContent;
+    const text = document.getElementById('paragraphs').value;
+    const title = document.getElementById('title').value;
+    const summary = document.getElementById('summary').value;
     return this.sendContent({
       title, 
       summary, 
