@@ -8,6 +8,7 @@ from model import get_trained_model
 viral_model = get_trained_model('share_count', 100, is_logistic=True)
 comment_model = get_trained_model('comment_count', 50)
 share_model = get_trained_model('share_count', 100)
+reaction_model = get_trained_model('reaction_count', 50)
 
 def assert_in(val, err):
   if not val:
@@ -39,17 +40,19 @@ def predict():
 
   comment_prediction = max(comment_model.predict(str(title)), 0)
   share_prediction = max(share_model.predict(str(title)), 0)
+  reaction_prediction = max(reaction_model.predict(str(title)), 0)
   
   viral_prediction = viral_model.predict(str(title)) > 0
 
   if viral_prediction:
     comment_prediction *= 100
     share_prediction *= 100
+    reaction_prediction *= 100
 
   return {
       'engagement': {
         'comments' : int(comment_prediction),
-        'reactions' : 0,
+        'reactions' : int(reaction_prediction),
         'shares' : int(share_prediction)
       },
       'tone': {
